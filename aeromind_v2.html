@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AeroMind — Predict. Prevent. Protect.</title>
+<meta name="description" content="AeroMind is the operational intelligence platform for aviation. 154 signals across 5 layers. Predict airline distress 6–18 months before collapse.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   TOKENS
+══════════════════════════════════════════ */
+:root{
+  --navy:#06101A;
+  --navy2:#091524;
+  --navy3:#0E1E2E;
+  --navy4:#132638;
+  --teal:#00C896;
+  --teal2:#009E78;
+  --teal3:#007A5C;
+  --teal-glow:rgba(0,200,150,0.12);
+  --teal-border:rgba(0,200,150,0.18);
+  --amber:#F59E0B;
+  --red:#EF4444;
+  --blue:#3B82F6;
+  --text:#F0F4F8;
+  --text2:#8BA3B8;
+  --text3:#4A6278;
+  --border:rgba(255,255,255,0.06);
+  --border2:rgba(255,255,255,0.1);
+  --mono:'JetBrains Mono',monospace;
+  --sans:'Sora',sans-serif;
+  --r:8px;
+  --r2:12px;
+}
+
+/* ══════════════════════════════════════════
+   RESET + BASE
+══════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--navy);color:var(--text);font-family:var(--sans);overflow-x:hidden;line-height:1.6}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+::selection{background:var(--teal);color:#000}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--navy2)}
+::-webkit-scrollbar-thumb{background:var(--teal3);border-radius:2px}
+
+/* ══════════════════════════════════════════
+   TYPOGRAPHY
+══════════════════════════════════════════ */
+.mono{font-family:var(--mono)}
+.label{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+.label-line{display:flex;align-items:center;gap:10px;margin-bottom:1.2rem}
+.label-line::before{content:'';width:28px;height:1px;background:var(--teal)}
+
+/* ══════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════ */
+.container{max-width:1100px;margin:0 auto;padding:0 1.5rem}
+section{padding:100px 1.5rem;position:relative}
+.inner{max-width:1100px;margin:0 auto}
+
+/* ══════════════════════════════════════════
+   SCROLL ANIMATIONS
+══════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-left{opacity:0;transform:translateX(-28px);transition:opacity .7s ease,transform .7s ease}
+.reveal-left.visible{opacity:1;transform:translateX(0)}
+.reveal-scale{opacity:0;transform:scale(.96);transition:opacity .6s ease,transform .6s ease}
+.reveal-scale.visible{opacity:1;transform:scale(1)}
+.delay-1{transition-delay:.1s}
+.delay-2{transition-delay:.2s}
+.delay-3{transition-delay:.35s}
+.delay-4{transition-delay:.5s}
+.delay-5{transition-delay:.65s}
+
+/* ══════════════════════════════════════════
+   NAV
+══════════════════════════════════════════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;transition:all .3s}
+nav.scrolled{background:rgba(6,16,26,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo{width:34px;height:34px;border:1.5px solid var(--teal);border-radius:8px;display:grid;place-items:center;position:relative;overflow:hidden}
+.nav-logo::after{content:'';position:absolute;inset:0;background:var(--teal-glow)}
+.radar-icon{width:16px;height:16px;position:relative}
+.radar-icon::before,.radar-icon::after{content:'';position:absolute;border-radius:50%;border:1px solid var(--teal)}
+.radar-icon::before{inset:0}
+.radar-icon::after{inset:4px;animation:radar-pulse 2s ease-in-out infinite}
+@keyframes radar-pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(.7);opacity:.4}}
+.nav-name-wrap{display:flex;flex-direction:column;gap:1px}
+.nav-name{font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--text)}
+.nav-tagline{font-family:var(--mono);font-size:9px;color:var(--teal);letter-spacing:.1em;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:2rem}
+.nav-links a{font-size:13px;color:var(--text2);transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{padding:8px 20px;background:var(--teal);color:#000 !important;font-size:13px;font-weight:500;border-radius:6px;transition:all .2s !important}
+.nav-cta:hover{background:#00E0A8;transform:translateY(-1px)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:22px;height:1.5px;background:var(--text2);border-radius:1px;transition:all .3s}
+
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+.hero{min-height:100vh;padding:0;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0}
+
+/* Sky gradient */
+.hero-sky{position:absolute;inset:0;background:linear-gradient(180deg,#020810 0%,#061018 40%,#0A1E2C 70%,#06101A 100%)}
+
+/* Star field */
+.stars{position:absolute;inset:0}
+.stars::before,.stars::after{content:'';position:absolute;inset:0;background-image:radial-gradient(1px 1px at 20% 30%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 80% 10%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 50% 60%,rgba(255,255,255,.3),transparent),radial-gradient(1.5px 1.5px at 10% 70%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 90% 50%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 35% 20%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 65% 80%,rgba(255,255,255,.3),transparent),radial-gradient(1.5px 1.5px at 75% 25%,rgba(255,255,255,.5),transparent)}
+.stars::after{background-image:radial-gradient(1px 1px at 15% 45%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 55% 35%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 40% 75%,rgba(255,255,255,.3),transparent),radial-gradient(1.5px 1.5px at 85% 65%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 5% 55%,rgba(255,255,255,.4),transparent),radial-gradient(1px 1px at 95% 30%,rgba(255,255,255,.3),transparent)}
+
+/* Runway */
+.runway{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:100%;height:45%;pointer-events:none}
+.runway-surface{position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(0deg,#080F14 0%,#0A1520 60%,transparent 100%)}
+.runway-line{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:2px;height:80%;background:linear-gradient(0deg,rgba(255,200,0,.8),rgba(255,200,0,.1),transparent);box-shadow:0 0 10px rgba(255,200,0,.4)}
+.runway-left,.runway-right{position:absolute;bottom:0;height:90%;width:1.5px;background:linear-gradient(0deg,rgba(255,80,80,.6),transparent)}
+.runway-left{left:35%;transform:perspective(200px) rotateY(15deg)}
+.runway-right{right:35%;transform:perspective(200px) rotateY(-15deg)}
+.runway-lights{position:absolute;bottom:0;left:0;right:0;height:100%}
+.rlight{position:absolute;bottom:0;width:4px;height:4px;border-radius:50%;animation:blink 1.5s ease-in-out infinite}
+.rlight.amber{background:rgba(255,180,0,.8);box-shadow:0 0 8px rgba(255,180,0,.6)}
+.rlight.blue-l{background:rgba(100,160,255,.8);box-shadow:0 0 8px rgba(100,160,255,.5)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* Horizon glow */
+.horizon-glow{position:absolute;bottom:38%;left:50%;transform:translateX(-50%);width:70%;height:120px;background:radial-gradient(ellipse,rgba(0,200,150,0.08) 0%,transparent 70%)}
+
+/* Aircraft silhouette */
+.aircraft{position:absolute;bottom:42%;left:50%;transform:translateX(-50%);z-index:2;animation:aircraft-float 6s ease-in-out infinite}
+@keyframes aircraft-float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+
+/* Radar sweep */
+.radar-wrap{position:absolute;top:15%;right:8%;width:200px;height:200px;opacity:.25}
+.radar-circle{position:absolute;inset:0;border-radius:50%;border:1px solid var(--teal)}
+.radar-inner{position:absolute;inset:25%;border-radius:50%;border:1px solid rgba(0,200,150,.5)}
+.radar-cross-h,.radar-cross-v{position:absolute;background:rgba(0,200,150,.3)}
+.radar-cross-h{top:50%;left:0;right:0;height:1px;transform:translateY(-50%)}
+.radar-cross-v{left:50%;top:0;bottom:0;width:1px;transform:translateX(-50%)}
+.radar-sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 80%,rgba(0,200,150,.4) 100%);animation:sweep 4s linear infinite;transform-origin:center}
+@keyframes sweep{to{transform:rotate(360deg)}}
+.radar-blip{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--teal);box-shadow:0 0 8px var(--teal);animation:blip-fade 4s linear infinite}
+.blip1{top:30%;left:60%;animation-delay:.8s}
+.blip2{top:60%;left:40%;animation-delay:2.1s}
+.blip3{top:45%;left:70%;animation-delay:3.2s}
+@keyframes blip-fade{0%,100%{opacity:0}25%,40%{opacity:1}60%{opacity:0}}
+
+/* Hero content */
+.hero-content{position:relative;z-index:10;padding:140px 2rem 60px;max-width:1100px;margin:0 auto;width:100%}
+.hero-status{display:inline-flex;align-items:center;gap:8px;background:rgba(0,200,150,.08);border:1px solid var(--teal-border);border-radius:100px;padding:6px 16px;margin-bottom:2rem}
+.status-pulse{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:pulse-live 2s ease-in-out infinite}
+@keyframes pulse-live{0%,100%{box-shadow:0 0 0 0 rgba(0,200,150,.4)}50%{box-shadow:0 0 0 6px rgba(0,200,150,0)}}
+.status-text{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:.06em}
+.hero-h1{font-size:clamp(2.8rem,7vw,5rem);font-weight:300;line-height:1.08;letter-spacing:-.03em;margin-bottom:1.5rem;max-width:750px}
+.hero-h1 strong{font-weight:600;color:var(--teal);display:block}
+.hero-sub{font-size:1.1rem;color:var(--text2);max-width:500px;margin-bottom:2.5rem;font-weight:300;line-height:1.75}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3.5rem}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:var(--teal);color:#000;font-weight:600;font-size:14px;border-radius:7px;border:none;cursor:pointer;transition:all .2s}
+.btn-primary:hover{background:#00E0A8;transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,200,150,.25)}
+.btn-secondary{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:transparent;color:var(--text);font-size:14px;border-radius:7px;border:1px solid var(--border2);cursor:pointer;transition:all .2s}
+.btn-secondary:hover{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.04)}
+.hero-proof{display:flex;gap:2rem;flex-wrap:wrap}
+.proof-item{display:flex;flex-direction:column;gap:2px}
+.proof-num{font-family:var(--mono);font-size:1.4rem;font-weight:500;color:var(--text)}
+.proof-label{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+.proof-divider{width:1px;background:var(--border2);align-self:stretch}
+
+/* Marquee */
+.marquee-wrap{border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;position:relative;z-index:10}
+.marquee-wrap::before,.marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
+.marquee-wrap::before{left:0;background:linear-gradient(90deg,var(--navy),transparent)}
+.marquee-wrap::after{right:0;background:linear-gradient(-90deg,var(--navy),transparent)}
+.marquee{display:flex;animation:marquee 40s linear infinite;white-space:nowrap}
+.marquee-item{display:inline-flex;align-items:center;gap:2rem;padding:15px 3rem;font-family:var(--mono);font-size:10.5px;color:var(--text3);letter-spacing:.08em;flex-shrink:0}
+.marquee-item .dot{color:var(--teal);font-size:6px}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* ══════════════════════════════════════════
+   PROBLEM SECTION
+══════════════════════════════════════════ */
+.problem-section{background:var(--navy2)}
+.problem-intro{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;margin-bottom:4rem}
+.problem-text h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:300;letter-spacing:-.03em;line-height:1.15;margin-bottom:1.2rem}
+.problem-text p{color:var(--text2);font-weight:300;line-height:1.75}
+.problem-quote{background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.18);border-radius:var(--r2);padding:1.8rem}
+.pq-case{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.pq-airline{font-weight:600;font-size:1.1rem}
+.pq-badge{font-family:var(--mono);font-size:10px;padding:4px 10px;background:rgba(239,68,68,.15);color:var(--red);border-radius:4px;letter-spacing:.06em}
+.pq-stat{display:flex;gap:1.5rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.pq-num{font-family:var(--mono);font-size:1.5rem;font-weight:500;color:var(--red)}
+.pq-desc{font-size:12px;color:var(--text3);margin-top:3px}
+.pq-body{font-size:13px;color:var(--text2);line-height:1.65;font-style:italic;border-top:1px solid rgba(239,68,68,.12);padding-top:1rem;margin-top:.5rem}
+
+/* Signal cards */
+.signals-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.signal-card{background:var(--navy);padding:1.6rem;position:relative;overflow:hidden;transition:background .3s}
+.signal-card:hover{background:var(--navy3)}
+.signal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;transition:opacity .3s}
+.signal-card:nth-child(1)::before{background:var(--teal)}
+.signal-card:nth-child(2)::before{background:var(--blue)}
+.signal-card:nth-child(3)::before{background:var(--amber)}
+.signal-card:nth-child(4)::before{background:var(--red)}
+.sig-num{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.08em;margin-bottom:.8rem}
+.sig-title{font-size:14px;font-weight:500;margin-bottom:.5rem}
+.sig-body{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:1rem}
+.sig-time{font-family:var(--mono);font-size:10px;display:flex;align-items:center;gap:6px}
+.sig-time::before{content:'';width:16px;height:1px}
+.signal-card:nth-child(1) .sig-time{color:var(--teal)}.signal-card:nth-child(1) .sig-time::before{background:var(--teal)}
+.signal-card:nth-child(2) .sig-time{color:var(--blue)}.signal-card:nth-child(2) .sig-time::before{background:var(--blue)}
+.signal-card:nth-child(3) .sig-time{color:var(--amber)}.signal-card:nth-child(3) .sig-time::before{background:var(--amber)}
+.signal-card:nth-child(4) .sig-time{color:var(--red)}.signal-card:nth-child(4) .sig-time::before{background:var(--red)}
+
+.mosaic-callout{margin-top:2.5rem;background:rgba(0,200,150,.05);border:1px solid var(--teal-border);border-radius:var(--r2);padding:2rem;display:flex;gap:1.5rem;align-items:flex-start}
+.mosaic-icon{width:40px;height:40px;border-radius:8px;background:rgba(0,200,150,.1);border:1px solid var(--teal-border);display:grid;place-items:center;flex-shrink:0;font-size:18px}
+.mosaic-text h4{font-size:14px;font-weight:500;margin-bottom:.4rem;color:var(--teal)}
+.mosaic-text p{font-size:13px;color:var(--text2);line-height:1.65}
+
+/* ══════════════════════════════════════════
+   PLATFORM / LAYERS
+══════════════════════════════════════════ */
+.platform-section{background:var(--navy)}
+.platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;margin-bottom:4rem}
+.platform-text h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:300;letter-spacing:-.03em;line-height:1.15;margin-bottom:1.2rem}
+.platform-text p{color:var(--text2);font-weight:300;line-height:1.75;margin-bottom:1rem}
+.platform-how{display:flex;flex-direction:column;gap:.75rem;margin-top:1.5rem}
+.how-step{display:flex;align-items:center;gap:1rem;padding:.9rem 1.2rem;background:var(--navy2);border:1px solid var(--border);border-radius:var(--r);transition:all .3s}
+.how-step:hover{border-color:var(--teal-border);background:var(--navy3)}
+.how-step-num{font-family:var(--mono);font-size:10px;color:var(--teal);background:rgba(0,200,150,.1);padding:4px 8px;border-radius:4px;letter-spacing:.06em;flex-shrink:0}
+.how-step-text{font-size:13px;color:var(--text2)}
+.how-step-text strong{color:var(--text);font-weight:500}
+
+/* Layer rows */
+.layers-table{border:1px solid var(--border);border-radius:var(--r2);overflow:hidden}
+.layer-header{display:grid;grid-template-columns:48px 1fr auto;background:var(--navy3);padding:.6rem 1.2rem;border-bottom:1px solid var(--border)}
+.layer-header span{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+.layer-row{display:grid;grid-template-columns:48px 1fr auto;align-items:center;padding:1.1rem 1.2rem;border-bottom:1px solid var(--border);transition:background .2s;cursor:default}
+.layer-row:last-child{border-bottom:none}
+.layer-row:hover{background:var(--navy2)}
+.layer-row.active-layer{background:rgba(0,200,150,.04);border-left:2px solid var(--teal)}
+.lr-num{font-family:var(--mono);font-size:11px;color:var(--text3)}
+.lr-content{}
+.lr-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px}
+.lr-desc{font-size:11.5px;color:var(--text2)}
+.lr-badge{font-family:var(--mono);font-size:10px;padding:3px 9px;border-radius:3px;white-space:nowrap}
+.badge-teal{background:rgba(0,200,150,.1);color:var(--teal)}
+.badge-blue{background:rgba(59,130,246,.1);color:var(--blue)}
+.badge-red{background:rgba(239,68,68,.1);color:var(--red)}
+.badge-amber{background:rgba(245,158,11,.1);color:var(--amber)}
+.badge-purple{background:rgba(139,92,246,.1);color:#A78BFA}
+
+/* ══════════════════════════════════════════
+   OUTPUT / WHAT YOU GET
+══════════════════════════════════════════ */
+.output-section{background:var(--navy2)}
+.outputs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.output-card{background:var(--navy);border:1px solid var(--border);border-radius:var(--r2);padding:1.8rem;transition:all .35s;position:relative;overflow:hidden}
+.output-card::after{content:'';position:absolute;inset:0;border-radius:var(--r2);border:1px solid transparent;background:linear-gradient(135deg,var(--teal-border),transparent) border-box;-webkit-mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) padding-box,linear-gradient(#fff 0 0);-webkit-mask-composite:destination-out;mask-composite:exclude;opacity:0;transition:opacity .3s}
+.output-card:hover{transform:translateY(-4px);border-color:var(--teal-border)}
+.output-card:hover::after{opacity:1}
+.output-icon{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;margin-bottom:1.2rem;font-size:20px}
+.oi-teal{background:rgba(0,200,150,.1)}
+.oi-blue{background:rgba(59,130,246,.1)}
+.oi-amber{background:rgba(245,158,11,.1)}
+.oi-red{background:rgba(239,68,68,.1)}
+.oi-purple{background:rgba(139,92,246,.1)}
+.output-card h4{font-size:14px;font-weight:500;margin-bottom:.5rem}
+.output-card p{font-size:12.5px;color:var(--text2);line-height:1.65}
+.output-tag{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:.75rem;letter-spacing:.06em;text-transform:uppercase}
+
+/* ══════════════════════════════════════════
+   TRACTION
+══════════════════════════════════════════ */
+.traction-section{background:var(--navy)}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--r2);overflow:hidden;margin-bottom:4rem}
+.stat-card{background:var(--navy);padding:2rem 1.5rem;text-align:left}
+.stat-num{font-family:var(--mono);font-size:2.2rem;font-weight:300;line-height:1;margin-bottom:.4rem;color:var(--teal)}
+.stat-num span{font-size:1.4rem}
+.stat-label{font-size:13px;color:var(--text2);margin-bottom:.2rem}
+.stat-source{font-family:var(--mono);font-size:10px;color:var(--text3)}
+
+/* Timeline */
+.traction-timeline{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:4rem}
+.tl-card{background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);padding:1.6rem;position:relative;padding-left:2rem}
+.tl-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0 0 0 var(--r2)}
+.tl-card:nth-child(1)::before{background:var(--teal)}
+.tl-card:nth-child(2)::before{background:var(--blue)}
+.tl-card:nth-child(3)::before{background:var(--amber)}
+.tl-card:nth-child(4)::before{background:var(--teal)}
+.tl-era{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.5rem}
+.tl-title{font-size:14px;font-weight:500;margin-bottom:.4rem}
+.tl-body{font-size:12.5px;color:var(--text2);line-height:1.65}
+
+/* Operator logos / trust */
+.trust-section-inner{border-top:1px solid var(--border);padding-top:3rem}
+.trust-label{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;text-align:center;margin-bottom:2rem}
+.operators-row{display:flex;gap:1px;flex-wrap:wrap;justify-content:center}
+.op-pill{font-family:var(--mono);font-size:11px;padding:8px 18px;background:var(--navy2);border:1px solid var(--border);border-radius:100px;color:var(--text2);letter-spacing:.06em;transition:all .2s}
+.op-pill:hover{border-color:var(--teal-border);color:var(--teal)}
+
+/* Advisors */
+.advisors-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.advisor-card{background:var(--navy2);border:1px solid var(--border);border-radius:var(--r2);padding:1.5rem}
+.advisor-avatar{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--navy3),var(--navy4));border:1px solid var(--border2);display:grid;place-items:center;font-family:var(--mono);font-size:14px;font-weight:500;color:var(--teal);margin-bottom:1rem}
+.advisor-name{font-size:14px;font-weight:500;margin-bottom:.2rem}
+.advisor-role{font-size:12px;color:var(--teal);margin-bottom:.4rem;font-family:var(--mono);font-size:11px;letter-spacing:.03em}
+.advisor-exp{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* ══════════════════════════════════════════
+   WHY NOW
+══════════════════════════════════════════ */
+.whynow-section{background:var(--navy2)}
+.whynow-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-top:3rem}
+.wn-card{background:var(--navy);border:1px solid var(--border);border-radius:var(--r2);padding:1.6rem;transition:border-color .3s}
+.wn-card:hover{border-color:var(--teal-border)}
+.wn-num{font-family:var(--mono);font-size:1.6rem;font-weight:300;color:var(--teal);margin-bottom:.5rem}
+.wn-title{font-size:14px;font-weight:500;margin-bottom:.4rem}
+.wn-body{font-size:12.5px;color:var(--text2);line-height:1.65}
+
+/* ══════════════════════════════════════════
+   CONTACT
+══════════════════════════════════════════ */
+.contact-section{background:var(--navy);border-top:1px solid var(--border)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;margin-top:3rem}
+.contact-left h2{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:300;letter-spacing:-.03em;line-height:1.15;margin-bottom:1rem}
+.contact-left p{color:var(--text2);font-weight:300;line-height:1.75;margin-bottom:2rem}
+.audit-includes{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2rem}
+.ai-item{display:flex;align-items:center;gap:.75rem;font-size:13px;color:var(--text2)}
+.ai-check{width:20px;height:20px;border-radius:50%;background:rgba(0,200,150,.1);border:1px solid var(--teal-border);display:grid;place-items:center;flex-shrink:0;font-size:10px;color:var(--teal)}
+.contact-price{background:var(--navy2);border:1px solid var(--teal-border);border-radius:var(--r2);padding:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.price-label{font-family:var(--mono);font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em}
+.price-num{font-family:var(--mono);font-size:1.4rem;font-weight:500;color:var(--teal)}
+.price-note{font-size:12px;color:var(--text3);margin-top:2px}
+
+/* Form */
+.contact-form{display:flex;flex-direction:column;gap:1rem}
+.form-group{display:flex;flex-direction:column;gap:.4rem}
+.form-label{font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+.form-input,.form-select,.form-textarea{background:var(--navy2);border:1px solid var(--border);border-radius:var(--r);padding:11px 14px;color:var(--text);font-family:var(--sans);font-size:14px;outline:none;transition:border-color .2s;width:100%}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--teal2)}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text3)}
+.form-select{color:var(--text2)}
+.form-select option{background:var(--navy2);color:var(--text)}
+.form-textarea{height:100px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-submit{padding:13px;background:var(--teal);color:#000;font-weight:600;font-size:14px;border:none;border-radius:var(--r);cursor:pointer;transition:all .2s;font-family:var(--sans)}
+.form-submit:hover{background:#00E0A8;transform:translateY(-1px)}
+.form-success{display:none;text-align:center;padding:2rem;background:rgba(0,200,150,.06);border:1px solid var(--teal-border);border-radius:var(--r2)}
+.form-success h4{color:var(--teal);margin-bottom:.5rem}
+.form-success p{font-size:13px;color:var(--text2)}
+
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+footer{background:var(--navy2);border-top:1px solid var(--border);padding:2rem 1.5rem}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.footer-brand{font-family:var(--mono);font-size:12px;color:var(--text3)}
+.footer-brand strong{color:var(--teal)}
+.footer-links{display:flex;gap:2rem}
+.footer-links a{font-family:var(--mono);font-size:11px;color:var(--text3);transition:color .2s}
+.footer-links a:hover{color:var(--teal)}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media(max-width:900px){
+  .problem-intro,.platform-grid,.contact-grid{grid-template-columns:1fr}
+  .signals-grid{grid-template-columns:1fr 1fr}
+  .outputs-grid{grid-template-columns:1fr 1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .traction-timeline{grid-template-columns:1fr}
+  .advisors-grid{grid-template-columns:1fr}
+  .whynow-grid{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .signals-grid,.outputs-grid,.stats-row{grid-template-columns:1fr}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .hero-h1{font-size:2.4rem}
+  .hero-proof{gap:1rem}
+  .proof-divider{display:none}
+  .radar-wrap{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══════════════════════════════ -->
+<nav id="nav">
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <div class="radar-icon"></div>
+    </div>
+    <div class="nav-name-wrap">
+      <div class="nav-name">AeroMind</div>
+      <div class="nav-tagline">Aviation Intelligence</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#problem">Problem</a>
+    <a href="#platform">Platform</a>
+    <a href="#traction">Traction</a>
+    <a href="#contact" class="nav-cta">Request pilot →</a>
+  </div>
+  <div class="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-sky"></div>
+    <div class="stars"></div>
+    <!-- Runway -->
+    <div class="runway">
+      <div class="runway-surface"></div>
+      <div class="runway-line"></div>
+      <div class="runway-left"></div>
+      <div class="runway-right"></div>
+      <div class="runway-lights">
+        <div class="rlight amber" style="left:20%;bottom:5px;animation-delay:.3s"></div>
+        <div class="rlight amber" style="left:28%;bottom:5px;animation-delay:.6s"></div>
+        <div class="rlight amber" style="left:36%;bottom:5px;animation-delay:.9s"></div>
+        <div class="rlight amber" style="left:44%;bottom:5px;animation-delay:1.2s"></div>
+        <div class="rlight amber" style="right:44%;bottom:5px;animation-delay:1.2s"></div>
+        <div class="rlight amber" style="right:36%;bottom:5px;animation-delay:.9s"></div>
+        <div class="rlight amber" style="right:28%;bottom:5px;animation-delay:.6s"></div>
+        <div class="rlight amber" style="right:20%;bottom:5px;animation-delay:.3s"></div>
+        <div class="rlight blue-l" style="left:10%;bottom:8px;animation-delay:.5s"></div>
+        <div class="rlight blue-l" style="right:10%;bottom:8px;animation-delay:.5s"></div>
+      </div>
+    </div>
+    <!-- Aircraft SVG -->
+    <div class="aircraft">
+      <svg width="220" height="70" viewBox="0 0 220 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M110 35 L190 38 L220 35 L190 32 Z" fill="rgba(180,195,210,0.15)" stroke="rgba(0,200,150,0.15)" stroke-width=".5"/>
+        <path d="M0 35 L160 30 Q190 28 210 35 Q190 42 160 40 Z" fill="rgba(140,165,185,0.2)" stroke="rgba(200,220,240,0.15)" stroke-width=".5"/>
+        <path d="M60 30 L80 10 L95 10 L85 32 Z" fill="rgba(140,165,185,0.18)" stroke="rgba(200,220,240,0.1)" stroke-width=".5"/>
+        <path d="M70 40 L80 58 L90 55 L88 38 Z" fill="rgba(140,165,185,0.15)" stroke="rgba(200,220,240,0.1)" stroke-width=".5"/>
+        <path d="M175 33 L185 26 L190 27 L183 34 Z" fill="rgba(140,165,185,0.15)"/>
+        <ellipse cx="210" cy="35" rx="4" ry="2" fill="rgba(0,200,150,0.2)"/>
+        <circle cx="210" cy="35" r="2" fill="rgba(0,200,150,0.6)"/>
+        <circle cx="210" cy="35" r="1" fill="rgba(0,200,150,1)" style="animation:pulse-live 1.5s infinite"/>
+        <line x1="0" y1="35" x2="15" y2="35" stroke="rgba(0,200,150,0.3)" stroke-width=".5" stroke-dasharray="3 3"/>
+      </svg>
+    </div>
+    <!-- Horizon -->
+    <div class="horizon-glow"></div>
+    <!-- Radar -->
+    <div class="radar-wrap">
+      <div class="radar-circle"></div>
+      <div class="radar-inner"></div>
+      <div class="radar-cross-h"></div>
+      <div class="radar-cross-v"></div>
+      <div class="radar-sweep"></div>
+      <div class="radar-blip blip1"></div>
+      <div class="radar-blip blip2"></div>
+      <div class="radar-blip blip3"></div>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-status anim">
+      <span class="status-pulse"></span>
+      <span class="status-text">Pilot programme open · Indian aviation operators</span>
+    </div>
+    <h1 class="hero-h1 anim delay-1">
+      Aviation already has<br>every signal it needs.
+      <strong>Nobody connects them.</strong>
+    </h1>
+    <p class="hero-sub anim delay-2">AeroMind reads 154 live signals across workforce, operations, safety, and finance — and tells you where the next failure is building, 6–18 months before it becomes irreversible.</p>
+    <div class="hero-btns anim delay-3">
+      <a href="#contact" class="btn-primary">Request a pilot audit →</a>
+      <a href="#problem" class="btn-secondary">See the evidence</a>
+    </div>
+    <div class="hero-proof anim delay-4">
+      <div class="proof-item">
+        <span class="proof-num" data-count="38" data-suffix="L">₹0</span>
+        <span class="proof-label">Revenue · This month</span>
+      </div>
+      <div class="proof-divider"></div>
+      <div class="proof-item">
+        <span class="proof-num" data-count="350" data-suffix="+">0</span>
+        <span class="proof-label">Placements · 90% rate</span>
+      </div>
+      <div class="proof-divider"></div>
+      <div class="proof-item">
+        <span class="proof-num" data-count="154" data-suffix="">0</span>
+        <span class="proof-label">Validated signals</span>
+      </div>
+      <div class="proof-divider"></div>
+      <div class="proof-item">
+        <span class="proof-num">18mo</span>
+        <span class="proof-label">Collapse lead time</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="marquee-wrap">
+    <div class="marquee">
+      <div class="marquee-item">JET AIRWAYS <span class="dot">◆</span> ₹36,500 CR LOSS <span class="dot">◆</span> 20,000 JOBS GONE <span class="dot">◆</span> SIGNALS VISIBLE 18 MONTHS EARLY</div>
+      <div class="marquee-item">KINGFISHER <span class="dot">◆</span> ₹9,000 CR DEBT <span class="dot">◆</span> SALARY DELAYS 9 MONTHS BEFORE GROUNDING</div>
+      <div class="marquee-item">GO FIRST <span class="dot">◆</span> FULL FLEET GROUNDED <span class="dot">◆</span> SAME PATTERN · DIFFERENT AIRLINE</div>
+      <div class="marquee-item">11 OF 14 INDIAN AIRLINES LOSING MONEY <span class="dot">◆</span> LOK SABHA DATA · DEC 2025</div>
+      <div class="marquee-item">ICRA PROJECTS ₹17,000–18,000 CR INDUSTRY LOSS FY2026 <span class="dot">◆</span> $101 PER MINUTE OF DELAY COST</div>
+      <div class="marquee-item">JET AIRWAYS <span class="dot">◆</span> ₹36,500 CR LOSS <span class="dot">◆</span> 20,000 JOBS GONE <span class="dot">◆</span> SIGNALS VISIBLE 18 MONTHS EARLY</div>
+      <div class="marquee-item">KINGFISHER <span class="dot">◆</span> ₹9,000 CR DEBT <span class="dot">◆</span> SALARY DELAYS 9 MONTHS BEFORE GROUNDING</div>
+      <div class="marquee-item">GO FIRST <span class="dot">◆</span> FULL FLEET GROUNDED <span class="dot">◆</span> SAME PATTERN · DIFFERENT AIRLINE</div>
+      <div class="marquee-item">11 OF 14 INDIAN AIRLINES LOSING MONEY <span class="dot">◆</span> LOK SABHA DATA · DEC 2025</div>
+      <div class="marquee-item">ICRA PROJECTS ₹17,000–18,000 CR INDUSTRY LOSS FY2026 <span class="dot">◆</span> $101 PER MINUTE OF DELAY COST</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROBLEM ══════════════════════════ -->
+<section id="problem" class="problem-section">
+  <div class="inner">
+    <div class="problem-intro">
+      <div class="problem-text reveal">
+        <div class="label-line"><span class="label">The problem</span></div>
+        <h2>Every collapse was<br>a failure of integration,<br>not information.</h2>
+        <p style="margin-top:1.2rem">The CIA had every signal needed to prevent 9/11. The FBI's computers couldn't talk to the NSA's. The 9/11 Commission called it "a failure of imagination." Aviation has the same structural failure — every day, across every airline.</p>
+        <p style="margin-top:.75rem">Salary data lives in HR. OTP data lives in operations. Vendor payments live in finance. Safety reports live in compliance. Nobody reads them together. AeroMind does.</p>
+      </div>
+      <div class="problem-quote reveal delay-2">
+        <div class="pq-case">
+          <div class="pq-airline">Jet Airways, 2019</div>
+          <div class="pq-badge">COLLAPSE CASE</div>
+        </div>
+        <div class="pq-stat">
+          <div><div class="pq-num">₹36,500 Cr</div><div class="pq-desc">Total dues at collapse</div></div>
+          <div><div class="pq-num">20,000</div><div class="pq-desc">Jobs destroyed</div></div>
+        </div>
+        <div class="pq-body">"Every signal was visible 18 months before the final flight. Salary delays. OTP decline. Vendor defaults. Lessor repossessions. Each looked explainable in isolation. Together, they were a pre-collapse mosaic that no system was reading."</div>
+      </div>
+    </div>
+
+    <div class="signals-grid reveal">
+      <div class="signal-card">
+        <div class="sig-num">SIGNAL 01 · WORKFORCE</div>
+        <div class="sig-title">Salary delays began</div>
+        <div class="sig-body">Q3 2018. Pilot salaries delayed by 5 days. Explained as temporary. Every Indian airline collapse showed this signal first, without exception.</div>
+        <div class="sig-time">8 months before final flight</div>
+      </div>
+      <div class="signal-card">
+        <div class="sig-num">SIGNAL 02 · OPERATIONS</div>
+        <div class="sig-title">OTP dropped to 65%</div>
+        <div class="sig-body">IndiGo operates at 83%. At 65%, a station is not performing poorly — it is structurally failing. The board saw the number. Nobody asked the cause.</div>
+        <div class="sig-time">12 months before final flight</div>
+      </div>
+      <div class="signal-card">
+        <div class="sig-num">SIGNAL 03 · FINANCIAL</div>
+        <div class="sig-title">Vendor payments stopped</div>
+        <div class="sig-body">47 vendors reducing credit exposure simultaneously. Not one dramatic default — a quiet compound erosion that collapsed the supply chain from within.</div>
+        <div class="sig-time">10 months before final flight</div>
+      </div>
+      <div class="signal-card">
+        <div class="sig-num">SIGNAL 04 · DISTRESS</div>
+        <div class="sig-title">Lessors re-marketed aircraft</div>
+        <div class="sig-body">Aircraft offered to competitors while still in Jet's livery. When a lessor starts re-marketing, they have made their risk assessment. They knew before the board did.</div>
+        <div class="sig-time">9 months before final flight</div>
+      </div>
+    </div>
+
+    <div class="mosaic-callout reveal delay-2">
+      <div class="mosaic-icon">⬡</div>
+      <div class="mosaic-text">
+        <h4>The Mosaic Theory</h4>
+        <p>No single signal was enough to trigger an intervention. Together, they formed an unambiguous collapse mosaic. AeroMind is the first platform that reads all four layers simultaneously — detecting the mosaic pattern before it becomes an obituary. Validated against Kingfisher (2012), Jet Airways (2019), and Go First (2023).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PLATFORM ═══════════════════════ -->
+<section id="platform" class="platform-section">
+  <div class="inner">
+    <div class="platform-grid">
+      <div class="reveal">
+        <div class="label-line"><span class="label">The platform</span></div>
+        <h2>154 signals.<br>5 layers.<br>One distress index.</h2>
+        <p style="margin-top:1.2rem;color:var(--text2);font-weight:300">What Palantir did for the CIA — connecting siloed intelligence data into one live picture — AeroMind does for aviation. The data already exists in your systems. We connect it.</p>
+        <p style="margin-top:.75rem;color:var(--text2);font-weight:300">Phase 1 is a human-delivered on-site audit. No software installation required. Deliverable within 5 days of site visit.</p>
+        <div class="platform-how">
+          <div class="how-step">
+            <div class="how-step-num">01 · INPUT</div>
+            <div class="how-step-text"><strong>We observe and collect</strong> — on-site audit of 154 operational signals via structured observation, HRMS exports, OTP records, safety logs</div>
+          </div>
+          <div class="how-step">
+            <div class="how-step-num">02 · PROCESS</div>
+            <div class="how-step-text"><strong>We correlate and score</strong> — signals normalised against industry benchmark, cross-layer correlations run, mosaic patterns detected</div>
+          </div>
+          <div class="how-step">
+            <div class="how-step-num">03 · OUTPUT</div>
+            <div class="how-step-text"><strong>You get the intelligence brief</strong> — Station Reliability Score, K/R/R Matrix, cost leakage map, 90-day action plan</div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal delay-2">
+        <div class="layers-table">
+          <div class="layer-header">
+            <span>#</span><span>Intelligence layer</span><span>Signals</span>
+          </div>
+          <div class="layer-row active-layer">
+            <div class="lr-num">01</div>
+            <div class="lr-content">
+              <div class="lr-title">Workforce Intelligence</div>
+              <div class="lr-desc">Shift readiness, SOP adherence, attrition, supervisor dependency</div>
+            </div>
+            <div class="lr-badge badge-teal">38</div>
+          </div>
+          <div class="layer-row">
+            <div class="lr-num">02</div>
+            <div class="lr-content">
+              <div class="lr-title">Operational Intelligence</div>
+              <div class="lr-desc">OTP trend, turnaround, delay cost, SLA compliance</div>
+            </div>
+            <div class="lr-badge badge-blue">34</div>
+          </div>
+          <div class="layer-row">
+            <div class="lr-num">03</div>
+            <div class="lr-content">
+              <div class="lr-title">Safety Intelligence</div>
+              <div class="lr-desc">Near-miss accumulation, BCAS decay, compliance scores</div>
+            </div>
+            <div class="lr-badge badge-red">32</div>
+          </div>
+          <div class="layer-row">
+            <div class="lr-num">04</div>
+            <div class="lr-content">
+              <div class="lr-title">Financial Intelligence</div>
+              <div class="lr-desc">CASK trend, salary adherence, vendor ageing, cash runway</div>
+            </div>
+            <div class="lr-badge badge-amber">32</div>
+          </div>
+          <div class="layer-row" style="background:rgba(0,200,150,.03)">
+            <div class="lr-num" style="color:var(--teal)">05</div>
+            <div class="lr-content">
+              <div class="lr-title" style="color:var(--teal)">AeroMind Distress Index</div>
+              <div class="lr-desc">Cross-layer mosaic · One probability score per airline</div>
+            </div>
+            <div class="lr-badge badge-purple">20</div>
+          </div>
+        </div>
+        <p style="font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:.75rem;text-align:right">Grounded in: Alan & Lapré 2018 · Altman Z-Score · IATA · Heinrich's Triangle</p>
+      </div>
+    </div>
+
+    <!-- What you get -->
+    <div class="label-line reveal" style="margin-top:4rem"><span class="label">What you receive</span></div>
+    <div class="outputs-grid">
+      <div class="output-card reveal delay-1">
+        <div class="output-icon oi-teal">📊</div>
+        <h4>Station Reliability Score</h4>
+        <p>A single composite score (0–100) summarising the operational reliability of a station across all 5 layers. One number the board can act on.</p>
+        <div class="output-tag">Delivered within 48hrs of site visit</div>
+      </div>
+      <div class="output-card reveal delay-2">
+        <div class="output-icon oi-blue">👥</div>
+        <h4>Keep / Retrain / Replace Matrix</h4>
+        <p>An evidence-based decision map for every assessed role. Who is reliable. Who needs intervention. Who is a liability. With hard rationale behind each recommendation.</p>
+        <div class="output-tag">Per role, per station</div>
+      </div>
+      <div class="output-card reveal delay-3">
+        <div class="output-icon oi-amber">⚡</div>
+        <h4>Operational Leak Map</h4>
+        <p>The top 10 gaps ranked by estimated cost and risk. Converts workforce and operational data into rupees per year — the number that opens the CFO's door.</p>
+        <div class="output-tag">With ₹ cost estimates</div>
+      </div>
+      <div class="output-card reveal delay-1">
+        <div class="output-icon oi-red">🎯</div>
+        <h4>90-Day Action Plan</h4>
+        <p>A prioritised, role-specific intervention plan with measurable milestones. Not recommendations — a structured execution plan with accountability checkpoints.</p>
+        <div class="output-tag">With named owners + dates</div>
+      </div>
+      <div class="output-card reveal delay-2">
+        <div class="output-icon oi-purple">🔮</div>
+        <h4>Distress Early Warning</h4>
+        <p>Cross-layer pattern analysis showing which signals are converging toward a known pre-collapse signature. The 18-month lead time you never had before.</p>
+        <div class="output-tag">Phase 2 — coming 2025</div>
+      </div>
+      <div class="output-card reveal delay-3">
+        <div class="output-icon oi-teal">📡</div>
+        <h4>Quarterly Monitoring</h4>
+        <p>Ongoing subscription to track station reliability scores over time, alert on deteriorating patterns, and measure the ROI of interventions implemented post-audit.</p>
+        <div class="output-tag">₹1–5L per station per quarter</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TRACTION ════════════════════════ -->
+<section id="traction" class="traction-section">
+  <div class="inner">
+    <div class="label-line reveal"><span class="label">Traction</span></div>
+    <h2 class="reveal" style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:300;letter-spacing:-.03em;margin-bottom:3rem">The manual proof-of-concept<br>is already generating revenue.</h2>
+
+    <div class="stats-row">
+      <div class="stat-card reveal">
+        <div class="stat-num"><span>₹</span><span class="counter" data-target="38">0</span><span>L</span></div>
+        <div class="stat-label">Revenue this month</div>
+        <div class="stat-source">Aviation workforce diagnostics · Calibre Aviation Academy</div>
+      </div>
+      <div class="stat-card reveal delay-1">
+        <div class="stat-num"><span class="counter" data-target="350">0</span><span>+</span></div>
+        <div class="stat-label">Professionals placed</div>
+        <div class="stat-source">IndiGo · Akasa · Air India · Fly91 · Ramp360 · Celebi</div>
+      </div>
+      <div class="stat-card reveal delay-2">
+        <div class="stat-num"><span class="counter" data-target="90">0</span><span>%</span></div>
+        <div class="stat-label">Placement success rate</div>
+        <div class="stat-source">Across 6 major Indian aviation operators</div>
+      </div>
+      <div class="stat-card reveal delay-3">
+        <div class="stat-num"><span class="counter" data-target="154">0</span></div>
+        <div class="stat-label">Validated signals</div>
+        <div class="stat-source">Academically grounded framework · 5 peer-reviewed studies</div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="label-line reveal"><span class="label">Validation journey</span></div>
+    <div class="traction-timeline">
+      <div class="tl-card reveal">
+        <div class="tl-era">2022–2023 · Origin</div>
+        <div class="tl-title">Problem found from the inside</div>
+        <div class="tl-body">Students placed at an Indian airline stopped receiving salaries. Investigating the cause revealed the pre-collapse signal pattern — the same sequence behind every Indian airline bankruptcy since 1994.</div>
+      </div>
+      <div class="tl-card reveal delay-1">
+        <div class="tl-era">2023–2024 · Validation</div>
+        <div class="tl-title">Thesis validated with 6 operators</div>
+        <div class="tl-body">Direct conversations with station managers, operations directors, and airline management at IndiGo, Akasa, Fly91, Air India, Ramp360, and Celebi. Unanimous: they could see individual signals. None had a system connecting them.</div>
+      </div>
+      <div class="tl-card reveal delay-2">
+        <div class="tl-era">2024–2025 · Commercial proof</div>
+        <div class="tl-title">₹3L to ₹38L MRR in 6 months</div>
+        <div class="tl-body">Calibre Aviation Academy — the manual version of what AeroMind automates — scaled 12x in 6 months. Aviation operators pay for workforce intelligence work. The market exists and is paying now.</div>
+      </div>
+      <div class="tl-card reveal delay-3">
+        <div class="tl-era">2025 · Now</div>
+        <div class="tl-title">Platform in build · Pilot open</div>
+        <div class="tl-body">154-signal framework designed and validated. Working prototype live. Government engagement with Ministry of Civil Aviation. YC Summer 2026 application submitted. Pilot programme open to Indian aviation operators.</div>
+      </div>
+    </div>
+
+    <!-- Operators trust -->
+    <div class="trust-section-inner reveal">
+      <div class="trust-label">Operators we've worked with and validated against</div>
+      <div class="operators-row">
+        <div class="op-pill">IndiGo</div>
+        <div class="op-pill">Air India</div>
+        <div class="op-pill">Akasa Air</div>
+        <div class="op-pill">Fly91</div>
+        <div class="op-pill">Ramp360</div>
+        <div class="op-pill">Celebi</div>
+        <div class="op-pill">GMR Airports</div>
+        <div class="op-pill">AAI</div>
+        <div class="op-pill">MoCA</div>
+      </div>
+    </div>
+
+    <!-- Advisors -->
+    <div class="label-line reveal" style="margin-top:3rem"><span class="label">Domain advisors</span></div>
+    <div class="advisors-grid">
+      <div class="advisor-card reveal">
+        <div class="advisor-avatar">SK</div>
+        <div class="advisor-name">Sai Kiran</div>
+        <div class="advisor-role">IATA-Certified Station Manager</div>
+        <div class="advisor-exp">20+ years aviation operations. Validates AeroMind's signal framework against real-world operational patterns. Ensures every data point maps to actual station-level decision-making.</div>
+      </div>
+      <div class="advisor-card reveal delay-1">
+        <div class="advisor-avatar">AS</div>
+        <div class="advisor-name">Ankit Singh</div>
+        <div class="advisor-role">Head of Operations · AAI Vijayawada</div>
+        <div class="advisor-exp">Airport authority operational leadership. Provides regulatory intelligence on DGCA and BCAS compliance signals. Validates the safety intelligence layer against actual enforcement patterns.</div>
+      </div>
+      <div class="advisor-card reveal delay-2">
+        <div class="advisor-avatar">ZM</div>
+        <div class="advisor-name">Zeeshan Mohammed</div>
+        <div class="advisor-role">Founder · Managing Partner, Calibre Aviation</div>
+        <div class="advisor-exp">2.5 years running India's fastest-growing aviation workforce diagnostics operation. IIM Ahmedabad Suzuki Innovation Fellow. NASA Space Apps winner. Building AeroMind from the problem he lived inside.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHY NOW ════════════════════════ -->
+<section id="whynow" class="whynow-section">
+  <div class="inner">
+    <div class="label-line reveal"><span class="label">Why this, why now</span></div>
+    <h2 class="reveal" style="font-size:clamp(1.8rem,4vw,2.6rem);font-weight:300;letter-spacing:-.03em;margin-bottom:.5rem">The aviation software market is $11.2B.<br>AeroMind's category is $0.</h2>
+    <div class="whynow-grid">
+      <div class="wn-card reveal">
+        <div class="wn-num">11 of 14</div>
+        <div class="wn-title">Indian airlines losing money right now</div>
+        <div class="wn-body">Official Lok Sabha data, December 2025. ICRA projects ₹17,000–18,000 crore in industry losses for FY2026. The problem is structural, worsening, and actively looking for a solution.</div>
+      </div>
+      <div class="wn-card reveal delay-1">
+        <div class="wn-num">$0</div>
+        <div class="wn-title">Size of our direct category today</div>
+        <div class="wn-body">Airbus Skywise covers aircraft data. SITA covers transactions. HR platforms cover training records. Nobody connects workforce + operations + safety + finance simultaneously. This category does not exist yet.</div>
+      </div>
+      <div class="wn-card reveal delay-2">
+        <div class="wn-num">1,500+</div>
+        <div class="wn-title">Aircraft on order by Indian carriers</div>
+        <div class="wn-body">India adding 100+ new routes. Greenfield airports opening across Tier 2 cities. The industry is scaling faster than its operational intelligence can keep pace. The cost of getting this wrong is not just financial.</div>
+      </div>
+      <div class="wn-card reveal delay-3">
+        <div class="wn-num">8 qtrs</div>
+        <div class="wn-title">Lead time operational signals provide</div>
+        <div class="wn-body">Alan & Lapré (Production and Operations Management, 2018): operational variables convey useful information up to 8 quarters before financial distress appears in the P&L. AeroMind is built on this exact finding.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══════════════════════ -->
+<section id="contact" class="contact-section">
+  <div class="inner">
+    <div class="contact-grid">
+      <div class="reveal">
+        <div class="label-line"><span class="label">Request a pilot</span></div>
+        <h2>Request a workforce intelligence audit.</h2>
+        <p>A 3-day on-site engagement. We observe, collect, correlate, and deliver a complete intelligence brief. No software installation. No long procurement. A conversation and an engagement letter.</p>
+        <div class="audit-includes">
+          <div class="ai-item"><div class="ai-check">✓</div>Station Reliability Score (0–100)</div>
+          <div class="ai-item"><div class="ai-check">✓</div>Keep / Retrain / Replace Matrix for all assessed roles</div>
+          <div class="ai-item"><div class="ai-check">✓</div>Top 10 operational leak map with ₹ cost estimates</div>
+          <div class="ai-item"><div class="ai-check">✓</div>90-day action plan with named owners and milestones</div>
+          <div class="ai-item"><div class="ai-check">✓</div>Benchmark comparison against industry median</div>
+        </div>
+        <div class="contact-price">
+          <div>
+            <div class="price-label">Pilot audit investment</div>
+            <div class="price-num">₹5–15 Lakh</div>
+            <div class="price-note">Per station · 3-day on-site · Deliverable in 5 days</div>
+          </div>
+          <div style="font-size:12px;color:var(--text3);max-width:200px;line-height:1.5">Typical station recovers 8–26× the audit fee in annual delay cost reduction</div>
+        </div>
+      </div>
+      <div class="reveal delay-2">
+        <div id="contact-form">
+          <form class="contact-form" onsubmit="handleSubmit(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Name</label>
+                <input class="form-input" type="text" placeholder="Your name" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Work email</label>
+                <input class="form-input" type="email" placeholder="Work email" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Organisation</label>
+              <input class="form-input" type="text" placeholder="Airline / Airport / Ground handler">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Organisation type</label>
+              <select class="form-select">
+                <option value="" disabled selected>Select category</option>
+                <option>Airline</option>
+                <option>Airport operator</option>
+                <option>Ground handling company</option>
+                <option>Cargo terminal</option>
+                <option>MRO provider</option>
+                <option>Regulator / Government body</option>
+                <option>Aircraft lessor / Investor</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">What problem are you trying to solve?</label>
+              <textarea class="form-textarea" placeholder="OTP issues, workforce reliability, safety compliance gaps, financial distress signals..."></textarea>
+            </div>
+            <button type="submit" class="form-submit">Request a conversation →</button>
+          </form>
+        </div>
+        <div id="form-success" class="form-success">
+          <div style="font-size:1.5rem;margin-bottom:.5rem">✓</div>
+          <h4>Received</h4>
+          <p>Zeeshan will follow up within 24 hours to schedule a call.<br><br><a href="mailto:zee@18startup.com" style="color:var(--teal)">zee@18startup.com</a> · <a href="https://linkedin.com/in/zeethisside" style="color:var(--teal)">LinkedIn</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand"><strong>AeroMind</strong> · Aviation Operational Intelligence · Hyderabad, India · © 2026</div>
+    <div class="footer-links">
+      <a href="https://linkedin.com/in/zeethisside" target="_blank">LinkedIn</a>
+      <a href="mailto:zee@18startup.com">Contact</a>
+      <a href="#contact">Request pilot</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* NAV scroll effect */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('scrolled',window.scrollY>40);
+});
+
+/* Mobile menu */
+function toggleMenu(){
+  const links=document.querySelector('.nav-links');
+  links.style.display=links.style.display==='flex'?'none':'flex';
+  links.style.flexDirection='column';
+  links.style.position='fixed';
+  links.style.top='64px';
+  links.style.left='0';
+  links.style.right='0';
+  links.style.background='rgba(6,16,26,.98)';
+  links.style.padding='1.5rem';
+  links.style.gap='1.2rem';
+  links.style.borderBottom='1px solid rgba(255,255,255,.06)';
+}
+
+/* Scroll reveal */
+const revealEls=document.querySelectorAll('.reveal,.reveal-left,.reveal-scale');
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.12});
+revealEls.forEach(el=>ro.observe(el));
+
+/* Counter animation */
+function animateCounter(el){
+  const target=parseInt(el.dataset.target);
+  const duration=1800;
+  const start=performance.now();
+  const update=now=>{
+    const t=Math.min((now-start)/duration,1);
+    const ease=1-Math.pow(1-t,3);
+    el.textContent=Math.round(ease*target);
+    if(t<1)requestAnimationFrame(update);
+  };
+  requestAnimationFrame(update);
+}
+const counterObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.counter').forEach(animateCounter);
+      counterObs.unobserve(e.target);
+    }
+  });
+},{threshold:.3});
+document.querySelectorAll('.stats-row,.hero-proof').forEach(el=>counterObs.observe(el));
+
+/* Hero proof number prefix */
+const heroProofs=document.querySelectorAll('.proof-num[data-count]');
+heroProofs.forEach(el=>{
+  const target=parseInt(el.dataset.count);
+  const suffix=el.dataset.suffix||'';
+  const prefix=el.textContent.replace(/[0-9]/g,'').split('0')[0];
+  const update=()=>{
+    const start=performance.now();
+    const run=now=>{
+      const t=Math.min((now-start)/1600,1);
+      const ease=1-Math.pow(1-t,3);
+      el.textContent=prefix+Math.round(ease*target)+suffix;
+      if(t<1)requestAnimationFrame(run);
+    };
+    requestAnimationFrame(run);
+  };
+  setTimeout(update,800);
+});
+
+/* Form submit */
+function handleSubmit(e){
+  e.preventDefault();
+  document.getElementById('contact-form').style.display='none';
+  document.getElementById('form-success').style.display='block';
+}
+
+/* Smooth scroll */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}
+  });
+});
+</script>
+</body>
+</html>

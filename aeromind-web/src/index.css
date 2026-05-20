@@ -1,0 +1,133 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --navy: #06101A;
+    --navy2: #091524;
+    --navy3: #0E1E2E;
+    --navy4: #132638;
+    --teal: #00C896;
+    --teal2: #009E78;
+    --teal3: #007A5C;
+    --teal-glow: rgba(0, 200, 150, 0.12);
+    --teal-border: rgba(0, 200, 150, 0.18);
+    --amber: #F59E0B;
+    --risk: #EF4444;
+    --text: #F0F4F8;
+    --text2: #8BA3B8;
+    --text3: #4A6278;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-size: 16px;
+    scroll-behavior: auto; /* Lenis handles smooth scroll */
+  }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'Sora', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: var(--teal);
+    color: #000;
+  }
+
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--navy2);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--teal3);
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  .label {
+    @apply font-mono text-[11px] tracking-widest uppercase text-teal;
+  }
+
+  .label-line {
+    @apply flex items-center gap-2.5 mb-5;
+  }
+
+  .label-line::before {
+    content: '';
+    @apply block w-7 h-px bg-teal flex-shrink-0;
+  }
+
+  .section-heading {
+    @apply text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-[#F0F4F8] leading-[1.08];
+  }
+
+  .section-body {
+    @apply text-base md:text-lg text-[#8BA3B8] leading-relaxed font-light max-w-xl;
+  }
+
+  .glass-card {
+    @apply bg-[rgba(9,21,36,0.7)] border border-[rgba(255,255,255,0.06)] rounded-xl backdrop-blur-sm;
+  }
+
+  .teal-glow {
+    box-shadow: 0 0 40px rgba(0, 200, 150, 0.15), 0 0 80px rgba(0, 200, 150, 0.05);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-teal text-navy font-semibold text-sm rounded-lg
+           hover:bg-teal-2 transition-colors duration-200 tracking-wide;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 px-6 py-3 border border-[rgba(255,255,255,0.12)] text-[#8BA3B8]
+           font-medium text-sm rounded-lg hover:border-teal hover:text-teal transition-colors duration-200;
+  }
+}
+
+@layer utilities {
+  .text-gradient-teal {
+    @apply bg-gradient-to-r from-teal to-[#4FC3F7] bg-clip-text text-transparent;
+  }
+
+  .border-subtle {
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .glow-teal {
+    text-shadow: 0 0 20px rgba(0, 200, 150, 0.6);
+  }
+}
+
+/* Canvas always behind */
+#globe-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Sections scroll over canvas */
+#scroll-container {
+  position: relative;
+  z-index: 10;
+}

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -5,19 +7,16 @@
 @layer base {
   :root {
     --navy: #06101A;
-    --navy2: #091524;
-    --navy3: #0E1E2E;
-    --navy4: #132638;
+    --black: #050508;
     --teal: #00C896;
     --teal2: #009E78;
     --teal3: #007A5C;
     --teal-glow: rgba(0, 200, 150, 0.12);
-    --teal-border: rgba(0, 200, 150, 0.18);
     --amber: #F59E0B;
     --risk: #EF4444;
     --text: #F0F4F8;
-    --text2: #8BA3B8;
-    --text3: #4A6278;
+    --text2: rgba(255,255,255,0.6);
+    --text3: rgba(255,255,255,0.35);
   }
 
   * {
@@ -28,11 +27,11 @@
 
   html {
     font-size: 16px;
-    scroll-behavior: auto; /* Lenis handles smooth scroll */
+    scroll-behavior: auto;
   }
 
   body {
-    background: var(--navy);
+    background: #050508;
     color: var(--text);
     font-family: 'Sora', sans-serif;
     overflow-x: hidden;
@@ -46,21 +45,86 @@
     color: #000;
   }
 
-  ::-webkit-scrollbar {
-    width: 3px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: var(--navy2);
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: var(--teal3);
-    border-radius: 2px;
-  }
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: #05080d; }
+  ::-webkit-scrollbar-thumb { background: var(--teal3); border-radius: 2px; }
 }
 
 @layer components {
+  /* ─── LIQUID GLASS ─── */
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.01);
+    background-blend-mode: luminosity;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: none;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .liquid-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.4px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0.15) 20%,
+      rgba(255, 255, 255, 0) 40%,
+      rgba(255, 255, 255, 0) 60%,
+      rgba(255, 255, 255, 0.15) 80%,
+      rgba(255, 255, 255, 0.45) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Teal-accented variant */
+  .liquid-glass-teal {
+    background: rgba(0, 200, 150, 0.04);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .liquid-glass-teal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 200, 150, 0.6) 0%,
+      rgba(0, 200, 150, 0.2) 30%,
+      rgba(0, 200, 150, 0) 60%,
+      rgba(0, 200, 150, 0.2) 80%,
+      rgba(0, 200, 150, 0.5) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* ─── TYPOGRAPHY ─── */
+  .serif-display {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+  }
+
+  .serif-italic {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+
   .label {
     @apply font-mono text-[11px] tracking-widest uppercase text-teal;
   }
@@ -75,29 +139,29 @@
   }
 
   .section-heading {
-    @apply text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-[#F0F4F8] leading-[1.08];
+    font-family: 'Instrument Serif', serif;
+    @apply text-5xl md:text-6xl lg:text-7xl text-white leading-[1.04] tracking-tight;
   }
 
   .section-body {
-    @apply text-base md:text-lg text-[#8BA3B8] leading-relaxed font-light max-w-xl;
+    @apply text-base md:text-lg leading-relaxed font-light max-w-xl;
+    color: rgba(255, 255, 255, 0.55);
   }
 
+  /* Legacy alias */
   .glass-card {
-    @apply bg-[rgba(9,21,36,0.7)] border border-[rgba(255,255,255,0.06)] rounded-xl backdrop-blur-sm;
+    @apply liquid-glass rounded-2xl;
   }
 
-  .teal-glow {
-    box-shadow: 0 0 40px rgba(0, 200, 150, 0.15), 0 0 80px rgba(0, 200, 150, 0.05);
-  }
-
+  /* ─── BUTTONS ─── */
   .btn-primary {
-    @apply inline-flex items-center gap-2 px-6 py-3 bg-teal text-navy font-semibold text-sm rounded-lg
+    @apply inline-flex items-center gap-2 px-6 py-3 bg-teal text-[#050508] font-semibold text-sm rounded-full
            hover:bg-teal-2 transition-colors duration-200 tracking-wide;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center gap-2 px-6 py-3 border border-[rgba(255,255,255,0.12)] text-[#8BA3B8]
-           font-medium text-sm rounded-lg hover:border-teal hover:text-teal transition-colors duration-200;
+    @apply liquid-glass inline-flex items-center gap-2 px-6 py-3 text-white
+           font-medium text-sm rounded-full hover:bg-white/5 transition-colors duration-200;
   }
 }
 
@@ -106,16 +170,21 @@
     @apply bg-gradient-to-r from-teal to-[#4FC3F7] bg-clip-text text-transparent;
   }
 
-  .border-subtle {
-    border-color: rgba(255, 255, 255, 0.06);
+  .glow-teal {
+    text-shadow: 0 0 40px rgba(0, 200, 150, 0.5);
   }
 
-  .glow-teal {
-    text-shadow: 0 0 20px rgba(0, 200, 150, 0.6);
+  .font-serif {
+    font-family: 'Instrument Serif', serif;
+  }
+
+  .font-serif-italic {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
   }
 }
 
-/* Canvas always behind */
+/* ─── CANVAS (fixed 3D globe) ─── */
 #globe-canvas {
   position: fixed;
   top: 0;
@@ -126,8 +195,28 @@
   z-index: 0;
 }
 
-/* Sections scroll over canvas */
+/* ─── SCROLL CONTAINER ─── */
 #scroll-container {
   position: relative;
   z-index: 10;
+}
+
+/* ─── HERO VIDEO ─── */
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+}
+
+/* ─── SECTION GRADIENTS ─── */
+.section-vignette {
+  background: radial-gradient(ellipse at center left, rgba(0,200,150,0.04) 0%, transparent 60%);
+}
+
+.section-vignette-right {
+  background: radial-gradient(ellipse at center right, rgba(79,195,247,0.04) 0%, transparent 60%);
 }

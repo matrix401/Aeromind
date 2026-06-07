@@ -44,6 +44,42 @@ export function Section10Resolution() {
             >
               Request Access
             </motion.a>
+            <form
+  action="https://formspree.io/f/mqeopdej"
+  method="POST"
+  className="liquid-glass rounded-2xl p-6 mt-6 w-full max-w-md flex flex-col gap-4"
+>
+  <input
+    type="text"
+    name="name"
+    placeholder="Name"
+    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
+    required
+  />
+
+  <input
+    type="email"
+    name="email"
+    placeholder="Email"
+    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
+    required
+  />
+
+  <textarea
+    name="message"
+    placeholder="Tell us about your requirements..."
+    rows={4}
+    className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white resize-none"
+    required
+  />
+
+  <button
+    type="submit"
+    className="liquid-glass rounded-full px-6 py-3 text-white font-medium"
+  >
+    Transmit Message
+  </button>
+</form>
           </div>
         </FadeIn>
 

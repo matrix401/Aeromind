@@ -74,13 +74,13 @@ export function Footer() {
                 </li>
               ))}
             </ul>
-            <p className="mt-4 text-xs text-white/50">
+            <p className="mt-4 text-xs text-white/60">
               GST: {business.registrations.gst}
             </p>
           </div>
         </div>
 
-        <p className="mt-10 border-t border-white/10 pt-6 text-xs text-white/50">
+        <p className="mt-10 border-t border-white/10 pt-6 text-xs text-white/60">
           © {year} {business.brandName}. All rights reserved.
         </p>
       </div>

@@ -4,7 +4,14 @@ export function StepProgress({ step, total }: { step: number; total: number }) {
       <p className="mb-2 text-sm font-medium text-text-dim">
         Step {step} of {total}
       </p>
-      <div className="flex gap-1.5" role="progressbar" aria-valuenow={step} aria-valuemin={1} aria-valuemax={total}>
+      <div
+        className="flex gap-1.5"
+        role="progressbar"
+        aria-label={`Step ${step} of ${total}`}
+        aria-valuenow={step}
+        aria-valuemin={1}
+        aria-valuemax={total}
+      >
         {Array.from({ length: total }).map((_, i) => (
           <span
             key={i}

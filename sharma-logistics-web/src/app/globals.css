@@ -9,9 +9,13 @@
 
   --color-ink: #123a61;
   --color-ink-2: #2e6d9e;
-  --color-orange: #f0761e;
-  --color-orange-deep: #c85a0e;
-  --color-whatsapp: #1c8a55;
+  /* Darkened from the brand's original #f0761e/#1c8a55 so white text at
+     16px meets WCAG AA (4.5:1) — verified via Lighthouse a11y audit.
+     Still reads as warm orange / WhatsApp green, just deep enough to
+     carry white text legibly. */
+  --color-orange: #b8500d;
+  --color-orange-deep: #8a3c09;
+  --color-whatsapp: #188049;
   --color-err: #b3432e;
 }
 

@@ -2,10 +2,13 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Button } from "@/components/ui/Button";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { PhoneIcon, WhatsappIcon, QuoteIcon } from "@/components/ui/icons";
+import { RealMoveCard } from "@/components/cards/RealMoveCard";
 import { business } from "@/config/business";
+import { getMovesFor } from "@/content/moves";
 import type { RegionHub } from "@/content/regions";
 
 export function RegionHubTemplate({ region }: { region: RegionHub }) {
+  const relatedMoves = getMovesFor({ localitySlug: region.slug, limit: 1 });
   const areas = region.localities.length > 0 ? region.localities : region.nearbyAreas ?? [];
   const areasLabel = region.localities.length > 0 ? "Areas we cover" : "Nearby areas";
 
@@ -46,9 +49,15 @@ export function RegionHubTemplate({ region }: { region: RegionHub }) {
         </div>
       ) : null}
 
-      <div className="mt-8 rounded-2xl border border-dashed border-line bg-paper p-6 text-center text-[15px] text-text-dim">
-        A real completed move from this area will appear here once supplied and verified.
-      </div>
+      {relatedMoves.length > 0 ? (
+        <div className="mt-8">
+          <RealMoveCard move={relatedMoves[0]} />
+        </div>
+      ) : (
+        <div className="mt-8 rounded-2xl border border-dashed border-line bg-paper p-6 text-center text-[15px] text-text-dim">
+          A real completed move from this area will appear here once supplied and verified.
+        </div>
+      )}
 
       <div className="mt-8">
         <h2 className="font-display text-lg font-semibold text-ink">Frequently asked questions</h2>

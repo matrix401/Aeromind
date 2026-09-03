@@ -4,10 +4,14 @@ import { Button } from "@/components/ui/Button";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { PhoneIcon, WhatsappIcon, QuoteIcon } from "@/components/ui/icons";
 import { ViewTracker } from "@/components/analytics/ViewTracker";
+import { RealMoveCard } from "@/components/cards/RealMoveCard";
 import { business } from "@/config/business";
+import { getMovesFor } from "@/content/moves";
 import type { RouteDetail } from "@/content/routeDetails";
 
 export function RoutePageTemplate({ route }: { route: RouteDetail }) {
+  const relatedMoves = getMovesFor({ routeSlug: route.slug, limit: 1 });
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       <ViewTracker event="route_view" params={{ route: route.slug, from: route.from, to: route.to }} />
@@ -81,9 +85,15 @@ export function RoutePageTemplate({ route }: { route: RouteDetail }) {
         </div>
       </div>
 
-      <div className="mt-8 rounded-2xl border border-dashed border-line bg-paper p-6 text-center text-[15px] text-text-dim">
-        A real completed {route.from}–{route.to} move will appear here once supplied and verified.
-      </div>
+      {relatedMoves.length > 0 ? (
+        <div className="mt-8">
+          <RealMoveCard move={relatedMoves[0]} />
+        </div>
+      ) : (
+        <div className="mt-8 rounded-2xl border border-dashed border-line bg-paper p-6 text-center text-[15px] text-text-dim">
+          A real completed {route.from}–{route.to} move will appear here once supplied and verified.
+        </div>
+      )}
       <div className="mt-4 rounded-2xl border border-dashed border-line bg-paper p-6 text-center text-[15px] text-text-dim">
         No verified reviews for this route published yet.
       </div>

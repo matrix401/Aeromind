@@ -51,6 +51,21 @@ export function RealMoveCard({ move }: { move: RealMove }) {
           </div>
         </dl>
         <p className="mt-3 text-sm font-medium text-ink-2">{move.priceBand}</p>
+        {move.customerReview ? (
+          <p className="mt-3 border-t border-line pt-3 text-[14.5px] italic text-text">
+            &ldquo;{move.customerReview}&rdquo;
+          </p>
+        ) : null}
+        {move.googleReviewLink ? (
+          <a
+            href={move.googleReviewLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-block text-sm font-medium text-ink-2 hover:underline"
+          >
+            View independent review ↗
+          </a>
+        ) : null}
       </div>
     </Card>
   );

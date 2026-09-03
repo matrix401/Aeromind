@@ -2,8 +2,10 @@ import { Breadcrumbs, type Crumb } from "@/components/ui/Breadcrumbs";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
+import { RealMoveCard } from "@/components/cards/RealMoveCard";
 import { PhoneIcon, WhatsappIcon, QuoteIcon, CheckIcon } from "@/components/ui/icons";
 import { business } from "@/config/business";
+import { getMovesFor } from "@/content/moves";
 import type { ServiceDetail } from "@/content/services";
 
 /**
@@ -19,6 +21,8 @@ export function ServicePageTemplate({
   service: ServiceDetail;
   breadcrumbs: Crumb[];
 }) {
+  const relatedMoves = getMovesFor({ serviceSlug: service.slug, limit: 1 });
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
       <Breadcrumbs items={breadcrumbs} />
@@ -92,9 +96,15 @@ export function ServicePageTemplate({
         <p className="mt-2 text-[15.5px] text-text-dim">{service.packingProtection}</p>
       </div>
 
-      <div className="mt-8 rounded-2xl border border-dashed border-line bg-paper p-6 text-center text-[15px] text-text-dim">
-        A real completed move for this service will appear here once supplied and verified.
-      </div>
+      {relatedMoves.length > 0 ? (
+        <div className="mt-8">
+          <RealMoveCard move={relatedMoves[0]} />
+        </div>
+      ) : (
+        <div className="mt-8 rounded-2xl border border-dashed border-line bg-paper p-6 text-center text-[15px] text-text-dim">
+          A real completed move for this service will appear here once supplied and verified.
+        </div>
+      )}
 
       <div className="mt-4 rounded-2xl border border-dashed border-line bg-paper p-6 text-center text-[15px] text-text-dim">
         No verified reviews for this service published yet.

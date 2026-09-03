@@ -14,6 +14,15 @@ export type Review = {
   videoUrl?: string;
 };
 
+/**
+ * A single verified completed move — the Phase 14 "real move" data model.
+ * The array of these (content/moves.ts) is the one source every page
+ * (homepage, service, locality, route pages) and every marketing channel
+ * (GBP posts, social, case studies) pulls real proof from. It starts
+ * empty and stays empty until a move is genuinely completed, the
+ * customer's permission to publish is on record, and photos/pricing are
+ * supplied — see the truth policy notes in content/moves.ts.
+ */
 export type RealMove = {
   id: string;
   serviceType: string;
@@ -25,8 +34,20 @@ export type RealMove = {
   crewSize: string;
   durationHours: string;
   priceBand: string;
+  packingMaterials: string;
+  challenges: string;
+  resolution: string;
+  customerReview?: string;
+  googleReviewLink?: string;
   images: { src: string; alt: string }[];
-  reviewUrl?: string;
+  videoUrl?: string;
+  /** Never render a move whose status isn't "granted", anywhere. */
+  permissionStatus: "granted" | "pending" | "not_granted";
+  /** Which pages this move is allowed to surface on. */
+  appearsOn: string[];
+  relatedServiceSlug?: string;
+  relatedLocalitySlug?: string;
+  relatedRouteSlug?: string;
 };
 
 export type Locality = {

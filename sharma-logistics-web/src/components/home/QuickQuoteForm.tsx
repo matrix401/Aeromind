@@ -6,6 +6,7 @@ import { quickQuoteSchema } from "@/lib/validation";
 import { Button } from "@/components/ui/Button";
 import { QuoteIcon } from "@/components/ui/icons";
 import { business } from "@/config/business";
+import { trackEvent } from "@/lib/analytics";
 
 const whatToMoveOptions = [
   "House / home items",
@@ -53,6 +54,7 @@ export function QuickQuoteForm() {
     }
 
     setErrors({});
+    trackEvent("quote_start", { whatToMove: result.data.whatToMove, source: "homepage_quick_quote" });
     const params = new URLSearchParams({
       from: result.data.movingFrom,
       to: result.data.movingTo,

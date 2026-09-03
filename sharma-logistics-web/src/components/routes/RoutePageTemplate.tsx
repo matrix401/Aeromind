@@ -3,12 +3,14 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { FaqAccordion } from "@/components/ui/FaqAccordion";
 import { PhoneIcon, WhatsappIcon, QuoteIcon } from "@/components/ui/icons";
+import { ViewTracker } from "@/components/analytics/ViewTracker";
 import { business } from "@/config/business";
 import type { RouteDetail } from "@/content/routeDetails";
 
 export function RoutePageTemplate({ route }: { route: RouteDetail }) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+      <ViewTracker event="route_view" params={{ route: route.slug, from: route.from, to: route.to }} />
       <Breadcrumbs
         items={[{ label: "Home", href: "/" }, { label: "Routes", href: "/routes" }, { label: `${route.from} to ${route.to}` }]}
       />
@@ -99,7 +101,7 @@ export function RoutePageTemplate({ route }: { route: RouteDetail }) {
           <Button href="/quote/moving" variant="primary" icon={<QuoteIcon className="h-5 w-5" />}>
             Get Free Quote
           </Button>
-          <Button href={business.contact.whatsappHref} variant="whatsapp" icon={<WhatsappIcon className="h-5 w-5" />}>
+          <Button href={business.contact.whatsappHref} variant="whatsapp" icon={<WhatsappIcon className="h-5 w-5" />} analyticsEvent="send_photos_click">
             Send Photos
           </Button>
         </div>

@@ -63,7 +63,7 @@ export function RegionHubTemplate({ region }: { region: RegionHub }) {
           <Button href="/quote/moving" variant="primary" icon={<QuoteIcon className="h-5 w-5" />}>
             Get Free Quote
           </Button>
-          <Button href={business.contact.whatsappHref} variant="whatsapp" icon={<WhatsappIcon className="h-5 w-5" />}>
+          <Button href={business.contact.whatsappHref} variant="whatsapp" icon={<WhatsappIcon className="h-5 w-5" />} analyticsEvent="send_photos_click">
             Send Photos
           </Button>
         </div>

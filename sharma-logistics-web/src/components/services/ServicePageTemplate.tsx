@@ -117,6 +117,7 @@ export function ServicePageTemplate({
             href={business.contact.whatsappHref}
             variant="whatsapp"
             icon={<WhatsappIcon className="h-5 w-5" />}
+            analyticsEvent="send_photos_click"
           >
             Send Photos
           </Button>

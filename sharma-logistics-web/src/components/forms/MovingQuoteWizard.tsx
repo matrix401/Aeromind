@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 import { movingQuoteSchema, movingQuoteStepSchemas } from "@/lib/validation";
 import { readAttributionFromSearchParams } from "@/lib/attribution";
@@ -10,6 +10,7 @@ import { StepProgress } from "@/components/forms/StepProgress";
 import { Button } from "@/components/ui/Button";
 import { QuoteResultState } from "@/components/forms/QuoteResultState";
 import { business } from "@/config/business";
+import { trackEvent } from "@/lib/analytics";
 
 const TOTAL_STEPS = 4;
 
@@ -57,6 +58,17 @@ export function MovingQuoteWizard() {
     setValues((prev) => ({ ...prev, [key]: value }));
   }
 
+  useEffect(() => {
+    // The homepage quick-quote form already fires quote_start when it
+    // hands off here with ?from=&to=&... — only fire it ourselves for a
+    // direct/fresh visit to this page, so a single journey isn't
+    // double-counted across both entry points.
+    if (!searchParams.get("from") && !searchParams.get("to") && !searchParams.get("mobile")) {
+      trackEvent("quote_start");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function validateStep(currentStep: number): boolean {
     const schema = movingQuoteStepSchemas[currentStep as 1 | 2 | 3 | 4];
     const parsed = schema.safeParse(values);
@@ -74,7 +86,10 @@ export function MovingQuoteWizard() {
   }
 
   function goNext() {
-    if (validateStep(step)) setStep((s) => Math.min(s + 1, TOTAL_STEPS));
+    if (validateStep(step)) {
+      trackEvent("quote_step_complete", { step });
+      setStep((s) => Math.min(s + 1, TOTAL_STEPS));
+    }
   }
 
   function goBack() {
@@ -112,11 +127,16 @@ export function MovingQuoteWizard() {
       const body = await response.json();
 
       if (!response.ok || !body.ok) {
+        trackEvent("quote_error", { leadId: body.leadId, status: response.status });
         setResult({ leadId: body.leadId, message: body.error ?? "Something went wrong. Please try again." });
         setStatus("error");
         return;
       }
 
+      trackEvent("quote_submit", { leadId: body.leadId, whatToMove: values.whatToMove, moveScope: values.moveScope });
+      if (values.quoteMethod === "home-survey" || values.quoteMethod === "video-survey") {
+        trackEvent("survey_request", { leadId: body.leadId, quoteMethod: values.quoteMethod });
+      }
       setResult({
         leadId: body.leadId,
         coordinatorName: body.coordinatorName,
@@ -124,6 +144,7 @@ export function MovingQuoteWizard() {
       });
       setStatus("success");
     } catch {
+      trackEvent("quote_error", { reason: "network" });
       setResult({ message: "Something went wrong. Please check your connection and try again." });
       setStatus("error");
     }

@@ -1,6 +1,7 @@
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Button } from "@/components/ui/Button";
 import { PhoneIcon, WhatsappIcon, QuoteIcon } from "@/components/ui/icons";
+import { ViewTracker } from "@/components/analytics/ViewTracker";
 import { business } from "@/config/business";
 import type { Locality } from "@/lib/types";
 
@@ -18,6 +19,7 @@ export function LocalityDraftTemplate({
 }) {
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
+      <ViewTracker event="locality_view" params={{ locality: locality.slug, region: locality.regionSlug }} />
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },

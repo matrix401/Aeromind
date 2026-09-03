@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins, Work_Sans } from "next/font/google";
 import { business } from "@/config/business";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { AnalyticsScripts } from "@/components/analytics/AnalyticsScripts";
 import { SITE_URL, organizationJsonLd, localBusinessJsonLd, isVerified } from "@/lib/seo";
 import "./globals.css";
 
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${poppins.variable} ${workSans.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-paper text-text">
+        <AnalyticsScripts />
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={localBusinessJsonLd()} />
         {children}

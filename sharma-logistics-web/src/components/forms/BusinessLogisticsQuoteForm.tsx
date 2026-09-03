@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 import { businessLogisticsQuoteSchema } from "@/lib/validation";
 import { readAttributionFromSearchParams } from "@/lib/attribution";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { QuoteResultState } from "@/components/forms/QuoteResultState";
 import { QuoteIcon } from "@/components/ui/icons";
 import { business } from "@/config/business";
+import { trackEvent } from "@/lib/analytics";
 
 type FormState = {
   pickupCity: string;
@@ -57,6 +58,10 @@ export function BusinessLogisticsQuoteForm() {
     setValues((prev) => ({ ...prev, [key]: value }));
   }
 
+  useEffect(() => {
+    trackEvent("logistics_enquiry_start");
+  }, []);
+
   async function handleSubmit() {
     const approxWeight = values.weightUnknown ? "Not sure — will share a photo" : values.approxWeight;
     const parsed = businessLogisticsQuoteSchema.safeParse({ ...values, approxWeight, website: "" });
@@ -87,14 +92,17 @@ export function BusinessLogisticsQuoteForm() {
       const body = await response.json();
 
       if (!response.ok || !body.ok) {
+        trackEvent("quote_error", { form: "business-logistics", leadId: body.leadId, status: response.status });
         setResult({ message: body.error ?? "Something went wrong. Please try again." });
         setStatus("error");
         return;
       }
 
+      trackEvent("logistics_enquiry_submit", { leadId: body.leadId, loadType: values.loadType });
       setResult({ coordinatorName: body.coordinatorName, responseTime: body.responseTime });
       setStatus("success");
     } catch {
+      trackEvent("quote_error", { form: "business-logistics", reason: "network" });
       setResult({ message: "Something went wrong. Please check your connection and try again." });
       setStatus("error");
     }

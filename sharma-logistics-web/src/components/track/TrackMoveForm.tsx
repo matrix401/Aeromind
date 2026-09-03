@@ -37,10 +37,16 @@ export function TrackMoveForm() {
           href={buildWhatsappLink(whatsappMessage)}
           variant="whatsapp"
           icon={<WhatsappIcon className="h-5 w-5" />}
+          analyticsEvent="tracking_search"
         >
           WhatsApp for a Status Update
         </Button>
-        <Button href={business.contact.phoneHref} variant="call" icon={<PhoneIcon className="h-5 w-5" />}>
+        <Button
+          href={business.contact.phoneHref}
+          variant="call"
+          icon={<PhoneIcon className="h-5 w-5" />}
+          analyticsEvent="tracking_search"
+        >
           Call for a Status Update
         </Button>
       </div>

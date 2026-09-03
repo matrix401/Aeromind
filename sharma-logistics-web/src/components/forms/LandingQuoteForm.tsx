@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { landingQuoteSchema } from "@/lib/validation";
 import { readAttributionFromSearchParams } from "@/lib/attribution";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { QuoteResultState } from "@/components/forms/QuoteResultState";
 import { QuoteIcon } from "@/components/ui/icons";
 import { business } from "@/config/business";
+import { trackEvent } from "@/lib/analytics";
 
 /**
  * Deliberately short — name, mobile, one optional detail field. Every
@@ -19,6 +20,10 @@ export function LandingQuoteForm({ detailsLabel }: { detailsLabel: string }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [result, setResult] = useState<{ coordinatorName?: string; responseTime?: string; message?: string }>({});
+
+  useEffect(() => {
+    trackEvent("quote_start", { source: "landing_page" });
+  }, []);
 
   async function handleSubmit() {
     const parsed = landingQuoteSchema.safeParse({ ...values, website: "" });
@@ -46,13 +51,16 @@ export function LandingQuoteForm({ detailsLabel }: { detailsLabel: string }) {
       });
       const body = await response.json();
       if (!response.ok || !body.ok) {
+        trackEvent("quote_error", { form: "landing", leadId: body.leadId, status: response.status });
         setResult({ message: body.error ?? "Something went wrong. Please try again." });
         setStatus("error");
         return;
       }
+      trackEvent("quote_submit", { leadId: body.leadId, source: "landing_page" });
       setResult({ coordinatorName: body.coordinatorName, responseTime: body.responseTime });
       setStatus("success");
     } catch {
+      trackEvent("quote_error", { form: "landing", reason: "network" });
       setResult({ message: "Something went wrong. Please check your connection and try again." });
       setStatus("error");
     }

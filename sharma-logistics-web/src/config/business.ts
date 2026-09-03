@@ -30,10 +30,10 @@ export const business = {
   branches: "[VERIFY_STAFFED_BRANCHES]" as string | { name: string; address: string }[],
 
   contact: {
-    phoneDisplay: "[VERIFY_PHONE_NUMBER]",
-    phoneHref: "tel:+91[VERIFY_PHONE_NUMBER]",
-    whatsappDisplay: "[VERIFY_WHATSAPP_NUMBER]",
-    whatsappHref: "https://wa.me/91[VERIFY_WHATSAPP_NUMBER]",
+    phoneDisplay: "+91 7601 072 443",
+    phoneHref: "tel:+917601072443",
+    whatsappDisplay: "+91 7601 072 443",
+    whatsappHref: "https://wa.me/917601072443",
     email: "[VERIFY_EMAIL_ADDRESS]",
   },
 

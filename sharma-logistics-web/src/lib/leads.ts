@@ -29,10 +29,25 @@ export async function deliverLead(payload: LeadPayload): Promise<LeadDeliveryRes
   const webhookUrl = process.env.LEAD_WEBHOOK_URL;
   if (webhookUrl) {
     try {
+      // Flattened (not nested) body: Formspree-style email endpoints render
+      // top-level fields directly in the notification email, and a flat
+      // shape is also easier for Zapier/Make to map from than nested JSON.
+      const flatBody: Record<string, unknown> = {
+        _subject: `New ${payload.formType} enquiry — ${payload.leadId}`,
+        leadId: payload.leadId,
+        formType: payload.formType,
+        submittedAt: payload.submittedAt,
+        ...payload.data,
+      };
+      for (const [key, value] of Object.entries(payload.attribution)) {
+        if (value !== undefined) flatBody[`attribution_${key}`] = value;
+      }
+      delete flatBody.website; // honeypot field — never useful in the notification
+
       const response = await fetch(webhookUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(flatBody),
       });
       if (!response.ok) {
         return { ok: false, reason: "delivery_failed", detail: `Webhook responded ${response.status}` };

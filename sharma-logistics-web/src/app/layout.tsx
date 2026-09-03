@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins, Work_Sans } from "next/font/google";
 import { business } from "@/config/business";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { MobileActionBar } from "@/components/layout/MobileActionBar";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SITE_URL, organizationJsonLd, localBusinessJsonLd, isVerified } from "@/lib/seo";
 import "./globals.css";
@@ -40,6 +37,13 @@ export const metadata: Metadata = {
     : {}),
 };
 
+/**
+ * True root layout — just the document shell, fonts and site-wide
+ * structured data. Full site chrome (header/footer/mobile bar) lives in
+ * (site)/layout.tsx; Google Ads landing pages under (landing) get their
+ * own minimal chrome instead, per the Phase 11 requirement to keep
+ * landing-page navigation minimal.
+ */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -49,18 +53,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col bg-paper text-text">
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={localBusinessJsonLd()} />
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-orange focus:px-4 focus:py-2 focus:text-white"
-        >
-          Skip to content
-        </a>
-        <Header />
-        <main id="main-content" className="flex-1 pb-16 lg:pb-0">
-          {children}
-        </main>
-        <Footer />
-        <MobileActionBar />
+        {children}
       </body>
     </html>
   );

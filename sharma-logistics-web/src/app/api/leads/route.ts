@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { movingQuoteSchema, businessLogisticsQuoteSchema } from "@/lib/validation";
+import { movingQuoteSchema, businessLogisticsQuoteSchema, landingQuoteSchema } from "@/lib/validation";
 import { deliverLead } from "@/lib/leads";
 import { isRateLimited, getClientKey } from "@/lib/rate-limit";
 import { business } from "@/config/business";
@@ -23,6 +23,7 @@ const requestSchema = z.discriminatedUnion("formType", [
     data: businessLogisticsQuoteSchema,
     attribution: attributionSchema,
   }),
+  z.object({ formType: z.literal("landing"), data: landingQuoteSchema, attribution: attributionSchema }),
 ]);
 
 /**
@@ -30,7 +31,10 @@ const requestSchema = z.discriminatedUnion("formType", [
  * Extend this once verified price-band data (Phase 6-8 content) exists —
  * today it can only ever say "survey required" or "estimator will confirm".
  */
-function decideQuoteOutcome(formType: "moving" | "business-logistics", data: Record<string, unknown>) {
+function decideQuoteOutcome(
+  formType: "moving" | "business-logistics" | "landing",
+  data: Record<string, unknown>,
+) {
   if (formType === "moving" && (data.quoteMethod === "home-survey" || data.quoteMethod === "video-survey")) {
     return "survey-required" as const;
   }

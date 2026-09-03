@@ -2,7 +2,7 @@ import type { Attribution } from "@/lib/attribution";
 
 export type LeadPayload = {
   leadId: string;
-  formType: "quick-quote" | "moving" | "business-logistics";
+  formType: "quick-quote" | "moving" | "business-logistics" | "landing";
   submittedAt: string;
   data: Record<string, unknown>;
   attribution: Attribution;

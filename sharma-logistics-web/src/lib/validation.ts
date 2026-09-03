@@ -110,3 +110,15 @@ export const businessLogisticsQuoteSchema = z.object({
 });
 
 export type BusinessLogisticsQuoteInput = z.infer<typeof businessLogisticsQuoteSchema>;
+
+// Google Ads landing pages (Phase 11) — a deliberately short enquiry form,
+// since paid-traffic conversion drops fast with every extra field.
+export const landingQuoteSchema = z.object({
+  name: nameSchema,
+  mobile: indianMobileSchema,
+  details: z.string().trim().max(500).optional().default(""),
+  consent: consentSchema,
+  website: honeypotSchema,
+});
+
+export type LandingQuoteInput = z.infer<typeof landingQuoteSchema>;

@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Moving Services",
   description:
     "Home shifting, office shifting, interstate relocation, bike and car transport, packing, storage — all Sharma Logistics Solutions moving services in one place.",
+  alternates: { canonical: "/moving-services" },
 };
 
 export default function MovingServicesPage() {

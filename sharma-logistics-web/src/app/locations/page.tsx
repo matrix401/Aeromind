@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Locations We Serve",
   description:
     "Sharma Logistics Solutions coverage across Hyderabad — North, West, Central, East, South Hyderabad and Secunderabad.",
+  alternates: { canonical: "/locations" },
 };
 
 export default function LocationsPage() {

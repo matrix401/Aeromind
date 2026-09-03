@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Interstate Routes from Hyderabad",
   description:
     "Interstate relocation routes from Hyderabad to major Indian cities, with delivery timelines and pricing guidance.",
+  alternates: { canonical: "/routes" },
 };
 
 export default function RoutesPage() {

@@ -6,6 +6,7 @@ import { TrackMoveForm } from "@/components/track/TrackMoveForm";
 export const metadata: Metadata = {
   title: "Track Your Move",
   description: "Check the status of your move or shipment with Sharma Logistics Solutions.",
+  alternates: { canonical: "/track-move" },
 };
 
 export default function TrackMovePage() {

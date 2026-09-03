@@ -8,6 +8,7 @@ import { business } from "@/config/business";
 export const metadata: Metadata = {
   title: "Contact Us",
   description: `Call, WhatsApp or get a free quote from ${business.brandName}.`,
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {

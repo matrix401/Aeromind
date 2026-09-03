@@ -8,6 +8,7 @@ import { business } from "@/config/business";
 export const metadata: Metadata = {
   title: "About Us",
   description: `About ${business.brandName} — Hyderabad's transparent moving partner.`,
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {

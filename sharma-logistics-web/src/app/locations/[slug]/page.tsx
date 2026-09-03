@@ -21,7 +21,11 @@ export async function generateMetadata({
 
   const region = getRegionBySlug(slug);
   if (region) {
-    return { title: region.h1, description: region.metaDescription };
+    return {
+      title: region.h1,
+      description: region.metaDescription,
+      alternates: { canonical: `/locations/${region.slug}` },
+    };
   }
 
   const locality = getDraftLocalityBySlug(slug);

@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Business Logistics Enquiry",
   description:
     "Tell us about your commercial goods shipment and get a response from Sharma Logistics Solutions' logistics team.",
+  alternates: { canonical: "/quote/business-logistics" },
 };
 
 export default function BusinessLogisticsQuotePage() {

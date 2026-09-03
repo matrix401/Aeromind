@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Packers and Movers Charges in Hyderabad",
   description:
     "Understand what affects your moving cost with Sharma Logistics Solutions — price factors for local, interstate, vehicle transport and business logistics.",
+  alternates: { canonical: "/charges" },
 };
 
 const lineItems = [

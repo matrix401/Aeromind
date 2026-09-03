@@ -20,6 +20,7 @@ export const metadata: Metadata = {
   title: "Packers and Movers Hyderabad",
   description:
     "Packers and movers across Hyderabad, interstate relocation and nationwide logistics — clear written pricing and one dedicated move coordinator.",
+  alternates: { canonical: "/" },
 };
 
 export default function HomePage() {

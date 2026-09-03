@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Business Logistics",
   description:
     "Nationwide commercial logistics from Hyderabad — full truck load, part load, warehousing and regular business transportation.",
+  alternates: { canonical: "/business-logistics" },
 };
 
 export default function BusinessLogisticsPage() {

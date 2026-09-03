@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Get a Free Moving Quote",
   description:
     "Tell us about your home, office, bike or car move and get your written quotation from Sharma Logistics Solutions.",
+  // Canonicalize away any ?from=&to=&... query-string variants from the
+  // homepage quick-quote handoff so they consolidate to one indexable URL.
+  alternates: { canonical: "/quote/moving" },
 };
 
 export default function MovingQuotePage() {

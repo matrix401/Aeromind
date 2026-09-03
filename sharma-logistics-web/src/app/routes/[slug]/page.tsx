@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { routeDetails, getRouteBySlug } from "@/content/routeDetails";
 import { RoutePageTemplate } from "@/components/routes/RoutePageTemplate";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { serviceJsonLd } from "@/lib/seo";
 
 export function generateStaticParams() {
   return routeDetails.map((route) => ({ slug: route.slug }));
@@ -15,7 +17,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const route = getRouteBySlug(slug);
   if (!route) return {};
-  return { title: route.h1, description: route.metaDescription };
+  return {
+    title: route.h1,
+    description: route.metaDescription,
+    alternates: { canonical: `/routes/${route.slug}` },
+  };
 }
 
 export default async function RoutePage({
@@ -27,5 +33,16 @@ export default async function RoutePage({
   const route = getRouteBySlug(slug);
   if (!route) notFound();
 
-  return <RoutePageTemplate route={route} />;
+  return (
+    <>
+      <JsonLd
+        data={serviceJsonLd({
+          name: route.h1,
+          description: route.metaDescription,
+          url: `/routes/${route.slug}`,
+        })}
+      />
+      <RoutePageTemplate route={route} />
+    </>
+  );
 }

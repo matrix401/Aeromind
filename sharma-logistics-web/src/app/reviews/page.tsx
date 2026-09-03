@@ -7,6 +7,7 @@ import { business } from "@/config/business";
 export const metadata: Metadata = {
   title: "Customer Reviews",
   description: "Real, independently verifiable reviews from Sharma Logistics Solutions customers.",
+  alternates: { canonical: "/reviews" },
 };
 
 export default function ReviewsPage() {

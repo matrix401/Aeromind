@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+:root {
+  --color-paper: #faf8f4;
+  --color-surface: #ffffff;
+  --color-line: #e4e0d6;
+  --color-text: #26303c;
+  --color-text-dim: #5b6472;
+
+  --color-ink: #123a61;
+  --color-ink-2: #2e6d9e;
+  --color-orange: #f0761e;
+  --color-orange-deep: #c85a0e;
+  --color-whatsapp: #1c8a55;
+  --color-err: #b3432e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: #12161c;
+    --color-surface: #1a2029;
+    --color-line: #2a3140;
+    --color-text: #e9edf2;
+    --color-text-dim: #9aa5b4;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-surface: var(--color-surface);
+  --color-line: var(--color-line);
+  --color-text: var(--color-text);
+  --color-text-dim: var(--color-text-dim);
+
+  --color-ink: var(--color-ink);
+  --color-ink-2: var(--color-ink-2);
+  --color-orange: var(--color-orange);
+  --color-orange-deep: var(--color-orange-deep);
+  --color-whatsapp: var(--color-whatsapp);
+  --color-err: var(--color-err);
+
+  --font-display: var(--font-poppins);
+  --font-body: var(--font-work-sans);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-text);
+  font-family: var(--font-body), Arial, Helvetica, sans-serif;
+  font-size: 17.5px;
+  line-height: 1.55;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), Arial, Helvetica, sans-serif;
+  text-wrap: balance;
+}
+
+/* Every interactive element gets a real, visible focus state. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--color-orange);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
